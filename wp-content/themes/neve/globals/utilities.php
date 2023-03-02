@@ -414,7 +414,7 @@ function neve_get_headings_selectors() {
 function neve_external_link( $link, $text = '', $echo = false ) {
 	$text          = empty( $text ) ? __( 'Learn More', 'neve' ) : $text;
 	$return        = sprintf(
-		'<a target="_blank" rel="external noopener noreferrer" href="' . esc_url( $link ) . '"><span class="screen-reader-text">%s</span><svg xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" viewBox="0 0 512 512" width="12" height="12" style="margin-right: 5px;"><path fill="currentColor" d="M432 320H400a16 16 0 0 0-16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48A48 48 0 0 0 0 112V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336A16 16 0 0 0 432 320ZM488 0h-128c-21.4 0-32 25.9-17 41l35.7 35.7L135 320.4a24 24 0 0 0 0 34L157.7 377a24 24 0 0 0 34 0L435.3 133.3 471 169c15 15 41 4.5 41-17V24A24 24 0 0 0 488 0Z"/></svg>%s</a>',
+		'<a target="_blank" rel="external noopener noreferrer" href="' . esc_url( $link ) . '"><span class="screen-reader-text">%s</span>%s <svg xmlns="http://www.w3.org/2000/svg" focusable="false" role="img" viewBox="0 0 512 512" width="12" height="12" style="margin-right: 5px;"><path fill="currentColor" d="M432 320H400a16 16 0 0 0-16 16V448H64V128H208a16 16 0 0 0 16-16V80a16 16 0 0 0-16-16H48A48 48 0 0 0 0 112V464a48 48 0 0 0 48 48H400a48 48 0 0 0 48-48V336A16 16 0 0 0 432 320ZM488 0h-128c-21.4 0-32 25.9-17 41l35.7 35.7L135 320.4a24 24 0 0 0 0 34L157.7 377a24 24 0 0 0 34 0L435.3 133.3 471 169c15 15 41 4.5 41-17V24A24 24 0 0 0 488 0Z"/></svg></a>',
 		esc_html__( '(opens in a new tab)', 'neve' ),
 		esc_html( $text )
 	);
@@ -704,4 +704,64 @@ function neve_do_loop_hook( $position ) {
 	 * @since 2.11
 	 */
 	do_action( "neve_loop_{$current_post_type}_{$position}" );
+}
+
+/**
+ * Get meta default data
+ *
+ * @param string $field Meta field name.
+ * @param string $default Default value.
+ *
+ * @return array
+ */
+function neve_get_default_meta_value( $field, $default ) {
+	$new_control_data = [];
+
+	$components = apply_filters(
+		'neve_meta_filter',
+		array(
+			'author'   => __( 'Author', 'neve' ),
+			'category' => __( 'Category', 'neve' ),
+			'date'     => __( 'Date', 'neve' ),
+			'comments' => __( 'Comments', 'neve' ),
+		)
+	);
+
+	$default_data = get_theme_mod( $field, $default );
+	if ( empty( $default_data ) ) {
+		return $new_control_data;
+	}
+
+	$default_data = json_decode( $default_data, true );
+	if ( ! is_array( $default_data ) ) {
+		return $new_control_data;
+	}
+
+	foreach ( $default_data as $meta_component ) {
+		if ( ! array_key_exists( $meta_component, $components ) ) {
+			continue;
+		}
+		$new_control_data[ $meta_component ] = (object) [
+			'slug'           => $meta_component,
+			'title'          => $components[ $meta_component ],
+			'visibility'     => 'yes',
+			'hide_on_mobile' => false,
+			'blocked'        => 'yes',
+		];
+	}
+
+	foreach ( $components as $component_id => $label ) {
+		if ( array_key_exists( $component_id, $new_control_data ) ) {
+			continue;
+		}
+		$new_control_data[ $component_id ] = (object) [
+			'slug'           => $component_id,
+			'title'          => $label,
+			'visibility'     => 'no',
+			'hide_on_mobile' => false,
+			'blocked'        => 'yes',
+		];
+	}
+
+	return array_values( $new_control_data );
 }

@@ -1,9 +1,9 @@
 === WordPress Native PHP Sessions ===
-Contributors: getpantheon, outlandish josh, mpvanwinkle77, danielbachhuber, andrew.taylor
+Contributors: getpantheon, outlandish josh, mpvanwinkle77, danielbachhuber, andrew.taylor, jazzs3quence, stovak
 Tags: comments, sessions
 Requires at least: 4.7
-Tested up to: 5.9
-Stable tag: 1.2.4
+Tested up to: 6.1
+Stable tag: 1.3.4
 Requires PHP: 5.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -29,24 +29,21 @@ https://github.com/pantheon-systems/wp-native-php-sessions
 
 That's it!
 
+== Configuration ==
+
+By default the session lifetime is set to 0, which is until the browser is closed.
+
+To override this use the `pantheon_session_expiration` filter before the WordPress Native PHP Sessions plugin is loaded. For example a small Must-use plugin (a.k.a. mu-plugin) could contain:
+
+    <?php
+    function my_session_expiration_override() {
+        return 60*60*4; // 4 hours
+    }
+    add_filter( 'pantheon_session_expiration', 'my_session_expiration_override' );
+
 == Contributing ==
 
-The best way to contribute to the development of this plugin is by participating on the GitHub project:
-
-https://github.com/pantheon-systems/wp-native-php-sessions
-
-Pull requests and issues are welcome!
-
-You may notice there are two sets of tests running, on two different services:
-
-* Travis CI runs the [PHPUnit](https://phpunit.de/) test suite.
-* Circle CI runs the [Behat](http://behat.org/) test suite against a Pantheon site, to ensure the plugin's compatibility with the Pantheon platform.
-
-Both of these test suites can be run locally, with a varying amount of setup.
-
-PHPUnit requires the [WordPress PHPUnit test suite](https://make.wordpress.org/core/handbook/testing/automated-testing/phpunit/), and access to a database with name `wordpress_test`. If you haven't already configured the test suite locally, you can run `bash bin/install-wp-tests.sh wordpress_test root '' localhost`.
-
-Behat requires a Pantheon site. Once you've created the site, you'll need [install Terminus](https://github.com/pantheon-systems/terminus#installation), and set the `TERMINUS_TOKEN`, `TERMINUS_SITE`, and `TERMINUS_ENV` environment variables. Then, you can run `./bin/behat-prepare.sh` to prepare the site for the test suite.
+See [CONTRIBUTING.md](https://github.com/pantheon-systems/wp-native-php-sessions/blob/main/CONTRIBUTING.md) for information on contributing.
 
 == Frequently Asked Questions ==
 
@@ -72,6 +69,31 @@ To fix, create a new file at `wp-content/mu-plugins/000-loader.php` and include 
 This mu-plugin will load WP Native PHP Sessions before all other plugins, while letting you still use the WordPress plugin updater to keep the plugin up-to-date.
 
 == Changelog ==
+
+= 1.3.4 (February 7, 2023) =
+* Add fallback for $session->get_data() [[#237(https://github.com/pantheon-systems/wp-native-php-sessions/pull/237)]] (reported [on WordPress.org](https://wordpress.org/support/topic/php-warning-session_start-failed-to-read-session-data-user/))
+* Update CODEOWNERS file [[#239](https://github.com/pantheon-systems/wp-native-php-sessions/pull/239)]
+* Fix GPL license in `composer.json` file [[#236](https://github.com/pantheon-systems/wp-native-php-sessions/pull/236)]
+* Bump grunt from 1.5.3 to 1.6.1 [[#235](https://github.com/pantheon-systems/wp-native-php-sessions/pull/235)]
+
+= 1.3.3 (January 25, 2023) =
+* Bump version in pantheon-sessions.php [[#234](https://github.com/pantheon-systems/wp-native-php-sessions/pull/234)].
+
+= 1.3.2 (January 25, 2023) =
+* PHP 8.2 compatibility [[#232](https://github.com/pantheon-systems/wp-native-php-sessions/pull/232)].
+* Bump dealerdirect/phpcodesniffer-composer-installer from 0.7.2 to 1.0.0 [[#229](https://github.com/pantheon-systems/wp-native-php-sessions/pull/229)].
+* Update images for lint and test-behat jobs [[#228](https://github.com/pantheon-systems/wp-native-php-sessions/pull/228)].
+
+= 1.3.1 (December 5, 2022) =
+* Document session lifetime handling [[#224](https://github.com/pantheon-systems/wp-native-php-sessions/pull/224)].
+* Make dependabot target develop branch [[#226](https://github.com/pantheon-systems/wp-native-php-sessions/pull/226)].
+* Ignore `.wordpress-org` directory [[#223](https://github.com/pantheon-systems/wp-native-php-sessions/pull/223)].
+
+= 1.3.0 (November 28th, 2022) =
+* Added CONTRIBUTING.MD and GitHub action to automate deployments to wp.org. [[#219](https://github.com/pantheon-systems/wp-native-php-sessions/pull/219)]
+
+= 1.2.5 (October 28, 2022) =
+* Added `#[ReturnTypeWillChange]` where required to silence deprecation warnings in PHP 8.1. [[#216](https://github.com/pantheon-systems/wp-native-php-sessions/pull/216)]
 
 = 1.2.4 (September 14th, 2021) =
 * Increases data blob size from 64k to 16M for new session tables; existing tables will need to manually modify the column if they want to apply this change [[#193](https://github.com/pantheon-systems/wp-native-php-sessions/pull/193)].
@@ -141,11 +163,11 @@ This mu-plugin will load WP Native PHP Sessions before all other plugins, while 
 * Compatibility with PHP 7.
 * Adds `pantheon_session_expiration` filter to modify session expiration value.
 
-= 0.4 = 
+= 0.4 =
 * Adjustment to `session_id()` behavior for wider compatibility
 * Using superglobal for REQUEST_TIME as opposed to `time()`
 
-= 0.3 = 
+= 0.3 =
 * Fixes issue related to WordPress plugin load order
 
 = 0.1 =

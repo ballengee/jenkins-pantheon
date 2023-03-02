@@ -13,6 +13,7 @@ namespace Neve\Customizer\Options;
 use Neve\Core\Settings\Config;
 use Neve\Core\Settings\Mods;
 use Neve\Customizer\Base_Customizer;
+use Neve\Customizer\Controls\React\Typography_Extra_Section;
 use Neve\Customizer\Types\Control;
 use Neve\Customizer\Types\Section;
 
@@ -27,9 +28,55 @@ class Typography extends Base_Customizer {
 	 */
 	public function add_controls() {
 		$this->sections_typography();
+		$this->controls_font_pairs();
 		$this->controls_typography_general();
 		$this->controls_typography_headings();
 		$this->controls_typography_blog();
+		$this->section_extra();
+	}
+
+	/**
+	 * Add controls for font pair section
+	 *
+	 * @return void
+	 */
+	private function controls_font_pairs() {
+		/**
+		 * Filters the font pairs that are available inside Customizer.
+		 *
+		 * @param array $pairs The font pairs array.
+		 *
+		 * @since 3.5.0
+		 */
+		$pairs = apply_filters( 'neve_font_pairings', Mods::get( Config::MODS_TPOGRAPHY_FONT_PAIRS, Config::$typography_default_pairs ) );
+
+		/**
+		 * Font Pairs Control
+		 */
+		$this->add_control(
+			new Control(
+				Config::MODS_TPOGRAPHY_FONT_PAIRS,
+				[
+					'transport'         => $this->selective_refresh,
+					'sanitize_callback' => 'sanitize_text_field',
+					'default'           => $pairs,
+				],
+				array(
+					'input_attrs' => array(
+						'pairs'       => $pairs,
+						'description' => array(
+							'text' => __( 'Choose Font family presets for your Headings and Text.', 'neve' ),
+							'link' => apply_filters( 'neve_external_link', 'https://docs.themeisle.com/article/1340-neve-typography', esc_html__( 'Learn more', 'neve' ) ),
+						),
+					),
+					'label'       => esc_html__( 'Font presets', 'neve' ),
+					'section'     => 'typography_font_pair_section',
+					'priority'    => 10,
+					'type'        => 'neve_font_pairings_control',
+				),
+				'\Neve\Customizer\Controls\React\Font_Pairings'
+			)
+		);
 	}
 
 	/**
@@ -37,15 +84,19 @@ class Typography extends Base_Customizer {
 	 */
 	private function sections_typography() {
 		$typography_sections = array(
-			'neve_typography_general'  => array(
+			'typography_font_pair_section' => array(
+				'title'    => __( 'Font presets', 'neve' ),
+				'priority' => 15,
+			),
+			'neve_typography_general'      => array(
 				'title'    => __( 'General', 'neve' ),
 				'priority' => 25,
 			),
-			'neve_typography_headings' => array(
+			'neve_typography_headings'     => array(
 				'title'    => __( 'Headings', 'neve' ),
 				'priority' => 35,
 			),
-			'neve_typography_blog'     => array(
+			'neve_typography_blog'         => array(
 				'title'    => __( 'Blog', 'neve' ),
 				'priority' => 45,
 			),
@@ -446,6 +497,24 @@ class Typography extends Base_Customizer {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Add section for extra inline controls
+	 *
+	 * @return void
+	 */
+	private function section_extra() {
+		$this->wpc->add_section(
+			new Typography_Extra_Section(
+				$this->wpc,
+				'typography_extra_section',
+				[
+					'priority' => 9999, // upsell priority(10000) - 1
+					'panel'    => 'neve_typography',
+				]
+			)
+		);
 	}
 }
 

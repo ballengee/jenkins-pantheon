@@ -10,6 +10,7 @@
 
 namespace Neve\Core;
 
+use Neve\Admin\Dashboard\Plugin_Helper;
 use Neve\Core\Settings\Mods_Migrator;
 
 /**
@@ -18,6 +19,7 @@ use Neve\Core\Settings\Mods_Migrator;
  * @package Neve\Core
  */
 class Admin {
+
 	/**
 	 * Dismiss notice key.
 	 *
@@ -79,9 +81,60 @@ class Admin {
 	}
 
 	/**
+	 * Get data specific to TPC plugin.
+	 *
+	 * @return array
+	 */
+	private function get_tpc_plugin_data() {
+		$plugin_helper = new Plugin_Helper();
+		$slug          = 'templates-patterns-collection';
+
+		$tpc_plugin_data['nonce']      = wp_create_nonce( 'wp_rest' );
+		$tpc_plugin_data['slug']       = $slug;
+		$tpc_plugin_data['cta']        = $plugin_helper->get_plugin_state( $slug );
+		$tpc_plugin_data['path']       = $plugin_helper->get_plugin_path( $slug );
+		$tpc_plugin_data['activate']   = $plugin_helper->get_plugin_action_link( $slug );
+		$tpc_plugin_data['deactivate'] = $plugin_helper->get_plugin_action_link( $slug, 'deactivate' );
+		$tpc_plugin_data['version']    = ! empty( $tpc_plugin_data['version'] ) ? $plugin_helper->get_plugin_version( $slug, $tpc_plugin_data['version'] ) : '';
+		$tpc_plugin_data['adminURL']   = admin_url( 'themes.php?page=tiob-starter-sites' );
+		$tpc_plugin_data['pluginsURL'] = esc_url( admin_url( 'plugins.php' ) );
+		$tpc_plugin_data['ajaxURL']    = esc_url( admin_url( 'admin-ajax.php' ) );
+		$tpc_plugin_data['ajaxNonce']  = esc_attr( wp_create_nonce( 'remove_notice_confirmation' ) );
+
+		return $tpc_plugin_data;
+	}
+
+	/**
+	 * Maybe register the script required for the welcome notice.
+	 * The script has a component that replaces the "Try one of our ready to use Starter Sites" button.
+	 * The button installs/activates and/or dismisses the notice as required.
+	 */
+	private function maybe_register_notice_script_starter_sites() {
+		if ( get_option( $this->dismiss_notice_key, 'no' ) === 'yes' ) {
+			return;
+		}
+		$screen = get_current_screen();
+		if ( empty( $screen ) ) {
+			return;
+		}
+		if ( ! in_array( $screen->id, [ 'dashboard', 'themes' ], true ) ) {
+			return;
+		}
+
+		$bundle_path  = get_template_directory_uri() . '/assets/apps/starter-sites/build/';
+		$dependencies = ( include get_template_directory() . '/assets/apps/starter-sites/build/notice.asset.php' );
+		wp_register_script( 'neve-ss-notice', $bundle_path . 'notice.js', $dependencies['dependencies'], $dependencies['version'], true );
+
+		wp_localize_script( 'neve-ss-notice', 'tpcPluginData', $this->get_tpc_plugin_data() );
+		wp_enqueue_script( 'neve-ss-notice' );
+	}
+
+	/**
 	 * Register script for react components.
 	 */
 	public function register_react_components() {
+		$this->maybe_register_notice_script_starter_sites();
+
 		$deps = include trailingslashit( NEVE_MAIN_DIR ) . 'assets/apps/components/build/components.asset.php';
 
 		wp_register_script( 'neve-components', trailingslashit( NEVE_ASSETS_URL ) . 'apps/components/build/components.js', $deps['dependencies'], $deps['version'], false );
@@ -91,7 +144,7 @@ class Admin {
 			[
 				'shouldUseColorPickerFix' => (int) ( ! neve_is_using_wp_version( '5.8' ) ),
 				'customizerURL'           => esc_url( admin_url( 'customize.php' ) ),
-			] 
+			]
 		);
 		wp_register_style( 'neve-components', trailingslashit( NEVE_ASSETS_URL ) . 'apps/components/build/style-components.css', [ 'wp-components' ], $deps['version'] );
 		wp_add_inline_style( 'neve-components', Dynamic_Css::get_root_css() );
@@ -203,6 +256,23 @@ class Admin {
 				},
 			)
 		);
+
+		register_rest_route(
+			'nv/v1/dashboard',
+			'/plugin-state/(?P<slug>[a-z0-9-]+)',
+			[
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => [ $this, 'get_plugin_state' ],
+				'permission_callback' => function() {
+					return ( current_user_can( 'install_plugins' ) && current_user_can( 'activate_plugins' ) );
+				},
+				'args'                => [
+					'slug' => [
+						'sanitize_callback' => 'sanitize_key',
+					],
+				],
+			]
+		);
 	}
 
 	/**
@@ -239,6 +309,25 @@ class Admin {
 		}
 
 		return new \WP_REST_Response( [ 'success' => $response ], 200 );
+	}
+
+	/**
+	 * Get any plugin's state.
+	 *
+	 * @param  \WP_REST_Request $request Request details.
+	 * @return \WP_REST_Request|\WP_Error
+	 */
+	public function get_plugin_state( \WP_REST_Request $request ) {
+		$slug = $request->get_param( 'slug' );
+
+		$state = ( new Plugin_Helper() )->get_plugin_state( $slug );
+
+		return rest_ensure_response(
+			[
+				'slug'  => $slug,
+				'state' => $state,
+			]
+		);
 	}
 
 	/**
@@ -436,10 +525,11 @@ class Admin {
 			esc_url( $this->get_notice_picture() )
 		);
 		$notice_sites_list = sprintf(
-			'<div><h3><span class="dashicons dashicons-images-alt2"></span> %1$s</h3><p>%2$s</p></div><div> <p>%3$s</p><p>%4$s</p> </div>',
+			'<div><h3><span class="dashicons dashicons-images-alt2"></span> %1$s</h3><p>%2$s</p><p>%3$s</p></div><div> <p id="neve-ss-install">%4$s</p><p>%5$s</p> </div>',
 			__( 'Sites Library', 'neve' ),
 			// translators: %s - Theme name
 				sprintf( esc_html__( '%s now comes with a sites library with various designs to pick from. Visit our collection of demos that are constantly being added.', 'neve' ), $name ),
+			esc_html( __( 'Install the template patterns plugin to get started.', 'neve' ) ),
 			$ob_btn,
 			$options_page_btn
 		);
@@ -534,7 +624,26 @@ class Admin {
 				padding:12px 36px;
 			}
 		}
+		@-webkit-keyframes spin {
+			from {
+				transform: rotate(0deg);
+			}
+			to {
+				transform: rotate(360deg);
+			}
+		}
+		#neve-ss-install button.is-loading {
+			color: #828282 !important;
+		}
+		#neve-ss-install button.is-loading .dashicon {
+			color: #646D82;
+			animation-name: spin;
+			animation-duration: 2000ms;
+			animation-iteration-count: infinite;
+			animation-timing-function: linear;
+		}
 		';
+
 		echo sprintf(
 			$notice_template, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$notice_header, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -582,33 +691,33 @@ class Admin {
 	private function dismiss_script() {
 		?>
 		<script type="text/javascript">
-									function handleNoticeActions($) {
-										var actions = $('.nv-welcome-notice').find('.notice-dismiss,  .ti-return-dashboard, .install-now, .options-page-btn')
-										$.each(actions, function (index, actionButton) {
-											$(actionButton).on('click', function (e) {
-												e.preventDefault()
-												var redirect = $(this).attr('href')
-												$.post(
-													'<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
-													{
-														nonce: '<?php echo esc_attr( wp_create_nonce( 'remove_notice_confirmation' ) ); ?>',
-														action: 'neve_dismiss_welcome_notice',
-														success: function () {
-															if (typeof redirect !== 'undefined' && window.location.href !== redirect) {
-																window.location = redirect
-																return false
-															}
-															$('.nv-welcome-notice').fadeOut()
-														}
-													}
-												)
-											})
-										})
+			function handleNoticeActions($) {
+				var actions = $('.nv-welcome-notice').find('.notice-dismiss, .ti-return-dashboard, .options-page-btn')
+				$.each(actions, function (index, actionButton) {
+					$(actionButton).on('click', function (e) {
+						e.preventDefault()
+						var redirect = $(this).attr('href')
+						$.post(
+							'<?php echo esc_url( admin_url( 'admin-ajax.php' ) ); ?>',
+							{
+								nonce: '<?php echo esc_attr( wp_create_nonce( 'remove_notice_confirmation' ) ); ?>',
+								action: 'neve_dismiss_welcome_notice',
+								success: function () {
+									if (typeof redirect !== 'undefined' && window.location.href !== redirect) {
+										window.location = redirect
+										return false
 									}
+									$('.nv-welcome-notice').fadeOut()
+								}
+							}
+						)
+					})
+				})
+			}
 
-									jQuery(document).ready(function () {
-										handleNoticeActions(jQuery)
-									})
+			jQuery(document).ready(function () {
+				handleNoticeActions(jQuery)
+			})
 		</script>
 		<?php
 	}
@@ -641,9 +750,6 @@ class Admin {
 	public function change_plugin_names( $plugins ) {
 		if ( array_key_exists( 'themeisle-companion/themeisle-companion.php', $plugins ) ) {
 			$plugins['themeisle-companion/themeisle-companion.php']['Name'] = 'Orbit Fox Companion by Neve theme';
-		}
-		if ( array_key_exists( 'otter-blocks/otter-blocks.php', $plugins ) ) {
-			$plugins['otter-blocks/otter-blocks.php']['Name'] = 'Gutenberg Blocks and Template Library by Neve theme';
 		}
 		if ( array_key_exists( 'otter-pro/otter-pro.php', $plugins ) ) {
 			$plugins['otter-pro/otter-pro.php']['Description'] = $plugins['otter-pro/otter-pro.php']['Description'] . ' It is part of Block Editor Booster from Neve.';

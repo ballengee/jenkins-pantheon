@@ -1130,6 +1130,16 @@ section.exclusive ul:not(.tns-slider) li:nth-child(n+5) {
   content: none;
 }
 
+.woocommerce-checkout #payment fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.woocommerce-checkout #payment fieldset .form-row {
+  padding: 1em;
+}
+
 .woocommerce-checkout .payment_methods {
   border: 0 !important;
 }
@@ -1458,6 +1468,37 @@ body.woocommerce-account table.order_details td {
   border: 0;
 }
 
+.woocommerce .woocommerce-breadcrumb {
+  color: var(--nv-text-color);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.woocommerce .woocommerce-breadcrumb a {
+  color: var(--nv-secondary-accent);
+}
+
+.woocommerce .woocommerce-breadcrumb .nv-breadcrumb-delimiter {
+  padding: 0 8px;
+}
+
+.woocommerce .woocommerce-result-count {
+  float: none;
+  margin: 0;
+}
+
+.nv-bc-count-wrap {
+  margin-bottom: 20px;
+  display: flex;
+  font-size: 14px;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.wc-block-grid__product-add-to-cart {
+  display: inline-flex;
+}
+
 @media (min-width: 576px) {
   .woocommerce-info,
   .woocommerce-error,
@@ -1555,6 +1596,9 @@ body.woocommerce-account table.order_details td {
   .nv-single-image-wrapper .images {
     width: 100% !important;
   }
+  .nv-bc-count-wrap {
+    flex-direction: row;
+  }
 }
 
 @media (min-width: 960px) {
@@ -1608,35 +1652,6 @@ body.woocommerce-account table.order_details td {
     grid-template-columns: 3fr 2fr;
     grid-column-gap: 60px;
   }
-}
-
-.woocommerce .woocommerce-breadcrumb {
-  color: var(--nv-text-color);
-  font-size: 14px;
-}
-
-.woocommerce .woocommerce-breadcrumb a {
-  color: var(--nv-secondary-accent);
-}
-
-.woocommerce .woocommerce-breadcrumb .nv-breadcrumb-delimiter {
-  padding: 0 8px;
-}
-
-.woocommerce .woocommerce-result-count {
-  float: none;
-  margin: 0;
-}
-
-.nv-bc-count-wrap {
-  margin-bottom: 20px;
-  display: flex;
-  font-size: 14px;
-  justify-content: space-between;
-}
-
-.wc-block-grid__product-add-to-cart {
-  display: inline-flex;
 }
 
 /*# sourceMappingURL=woocommerce.css.map */

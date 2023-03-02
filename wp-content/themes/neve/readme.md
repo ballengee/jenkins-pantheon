@@ -2,7 +2,7 @@
 **Contributors:** [themeisle](https://profiles.wordpress.org/themeisle)  
 **Tags:** blog,block-patterns, custom-logo, e-commerce, rtl-language-support, grid-layout, one-column, two-columns, custom-background, custom-colors, custom-header, custom-menu, featured-image-header, featured-images, flexible-header, full-width-template, sticky-post, theme-options, threaded-comments, translation-ready, accessibility-ready, wide-blocks, block-styles, footer-widgets, portfolio, left-sidebar, right-sidebar  
 **Requires at least:** 4.0  
-**Tested up to:** 5.9  
+**Tested up to:** 6.1  
 **Stable tag:** trunk  
 **Requires PHP:** 5.5.0  
 **License:** GPLv2 or later  
@@ -18,6 +18,118 @@ Neve WordPress theme, Copyright 2018 Themeisle
 Neve is distributed under the terms of the GNU GPLv2 or later
 
 ## Changelog ##
+
+##### [Version 3.5.1](https://github.com/Codeinwp/neve/compare/v3.5.0...v3.5.1) (2023-01-30)
+
+- Update the tested up to version for Neve Pro
+
+
+
+
+#### [Version 3.5.0](https://github.com/Codeinwp/neve/compare/v3.4.10...v3.5.0) (2023-01-30)
+
+- [Feat] Custom global colors - [Learn more](https://docs.themeisle.com/article/1314-global-colors-in-neve#custom-color)
+- [Feat] Font pairs inside the typography section - [Learn more](https://docs.themeisle.com/article/1340-neve-typography#font-presets)
+- [Feat] Full Site Editing for Neve - [Learn more](https://docs.themeisle.com/article/1774-neve-fse)
+- [Fix] Display featured post only on the first page
+- [Fix] Issue with specific customizer settings imported
+- [Fix] Color picker issue on small screens
+- Update Google Fonts
+
+
+
+
+##### [Version 3.4.10](https://github.com/Codeinwp/neve/compare/v3.4.9...v3.4.10) (2023-01-09)
+
+- [Fix] Installation of Super Page Cache for Cloudflare recommended plugin not working
+- [Fix] Make body_class hook signature similar to WP core one; props [@mi5t4n](https://github.com/mi5t4n) for contribution
+- [Fix] One click install for Cloud Templates & Patterns collection
+
+
+
+
+##### [Version 3.4.9](https://github.com/Codeinwp/neve/compare/v3.4.8...v3.4.9) (2022-12-15)
+
+- [Fix] Revert menu changes to fix regressions
+
+
+
+
+##### [Version 3.4.8](https://github.com/Codeinwp/neve/compare/v3.4.7...v3.4.8) (2022-12-14)
+
+- [Feat] Add better support for keyboard menu navigation
+- [Feat] Improve performance by conditionally loading the CSS for sidebar animation
+- [Fix] Change patterns registration hook
+- Update Google Fonts
+
+
+
+
+##### [Version 3.4.7](https://github.com/Codeinwp/neve/compare/v3.4.6...v3.4.7) (2022-12-01)
+
+- [Fix] Customizer not working in some specific cases.
+
+
+
+
+##### [Version 3.4.6](https://github.com/Codeinwp/neve/compare/v3.4.5...v3.4.6) (2022-11-29)
+
+- [Feat] Add toggle to enable local hosting for Google fonts
+- [Fix] PHP Warnings related to HFG Row BG on Legacy Skin
+- [Fix] Text color not configurable with menu skin mode 2
+- [Fix] Missing space on the Neve menu HTML
+- [Fix] Full Canvas Mobile Menu Overlaps Some HTML Content
+- Autoactivate TPC from the welcome notice
+- Change the dashboard link from Nolt to GitHub discussion
+
+
+
+
+##### [Version 3.4.5](https://github.com/Codeinwp/neve/compare/v3.4.4...v3.4.5) (2022-11-16)
+
+- [Fix] Typography breaks when switching viewports in Gutenberg Editor
+- [Fix] Gradient color option with WP 6.1
+- [Fix] Plugin path issues with Bedrock
+- [Fix] VoiceOver accessibility issue on iPhone
+- Update Google Fonts
+
+
+
+
+##### [Version 3.4.4](https://github.com/Codeinwp/neve/compare/v3.4.3...v3.4.4) (2022-11-03)
+
+- [Fix] Fix possible warning message from nav_walker.php
+- [Fix] Speaker Deck block not responsive
+- [Fix] Deprecation warnings in PHP 8.1
+- [Fix] Visual issue for heading controls in customizer
+- [Fix] Customizer toggle control style in WP 6.1
+- Stop changing Otter plugin name
+- Update starter content theme mods & theme screenshot
+- Update Google Fonts
+
+
+
+
+##### [Version 3.4.3](https://github.com/Codeinwp/neve/compare/v3.4.2...v3.4.3) (2022-10-12)
+
+- [Fix] Caret for select dropdown not appearing
+- [Fix] Adjusted the breadcrumbs and the text for the results display on mobile for WooCommerce
+- [Fix] Compatibility with WooCommerce Stripe Gateway plugin
+- Prepare Neve for WordPress 6.1
+- Update Google Fonts
+
+
+
+
+##### [Version 3.4.2](https://github.com/Codeinwp/neve/compare/v3.4.1...v3.4.2) (2022-09-27)
+
+- [Fix] Starter content hero image
+- [Fix] Upside down menu caret in Safari
+- [Fix] Customizer search prevents settings expand when using the pencil buttons from the preview
+- [Fix] Search icon component input height not applying on submit button
+
+
+
 
 ##### [Version 3.4.1](https://github.com/Codeinwp/neve/compare/v3.4.0...v3.4.1) (2022-09-19)
 

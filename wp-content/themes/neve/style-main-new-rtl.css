@@ -993,7 +993,7 @@ blockquote.is-style-large.wp-block-quote > p {
 .sm-style-full-height .sub-menu a:hover,
 .sm-style-full-height .sub-menu a:hover span,
 .sm-style-full-height .sub-menu a:hover i {
-  color: var(--color) !important;
+  color: var(--hovertextcolor, var(--color)) !important;
 }
 
 .style-full-height > ul > li > a:hover::after,
@@ -1174,6 +1174,10 @@ fieldset select {
   width: 100%;
 }
 
+form select {
+  background: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMCAyMCI+PHBhdGggZmlsbD0iIzYyNjI2MiIgZD0iTTE1IDhsLTQgNi00LTZoOHoiLz48L3N2Zz4=) left center/18px no-repeat, var(--formfieldbgcolor);
+}
+
 .widget-search {
   width: 100%;
   margin: 0 !important;
@@ -1210,6 +1214,8 @@ fieldset select {
   border-top-right-radius: 0;
   border-right: 0;
   position: relative;
+  height: var(--height);
+  overflow: hidden;
 }
 
 .search-form .search-submit::before {
@@ -1317,7 +1323,6 @@ fieldset select {
 .article-content-col .content {
   width: 100%;
   border-bottom: 0 solid;
-  padding-bottom: 20px;
   display: flex;
   flex-direction: column;
 }
@@ -1422,55 +1427,49 @@ body .layout-grid > .article-content-col,
   padding: var(--padding);
 }
 
-.layout-covers .article-content-col,
-.layout-covers .content,
-.layout-covers .cover-post {
-  height: 100%;
-}
-
-.layout-covers .content {
-  border: 0;
-  padding-bottom: 0;
-}
-
 .cover-post {
   box-shadow: var(--boxshadow, none);
   position: relative;
-  background-size: cover;
-  display: flex;
-  background-position: center;
-  overflow: hidden;
+  min-height: 300px;
 }
 
-.cover-post::after {
-  background: rgba(0, 0, 0, 0.75);
-  content: "";
-  position: absolute;
-  right: 0;
-  left: 0;
-  top: 0;
-  bottom: 0;
-}
-
-.cover-post img {
-  --boxshadow: none;
-}
-
-.cover-post .inner {
-  max-width: 100%;
-  min-height: 350px;
+.layout-covers .content {
   position: relative;
-  z-index: 10;
-  padding: 25px;
+  padding: 0;
+}
+
+.layout-covers .inner {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  z-index: 10;
   color: var(--color, #fff);
-  flex-grow: 1;
+  padding: 25px;
 }
 
-.cover-post .inner a:not(.button) {
+.layout-covers a:not(.button) {
   color: var(--color, #fff);
+}
+
+.layout-covers .img-wrap {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.layout-covers img {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+}
+
+.cover-overlay {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1;
 }
 
 .nv-single-post-wrap > div:first-child {
@@ -2071,19 +2070,19 @@ footer .nav-ul,
     margin-bottom: 0;
     grid-column: var(--thumbgridcolumn, 1);
   }
-  .nv-non-grid-article .content {
+  .nv-non-grid-article .nv-ft-wrap {
     display: grid;
     grid-gap: 20px;
     align-items: center;
     grid-auto-flow: dense;
   }
-  .posts-wrapper > article.has-post-thumbnail .content {
+  .posts-wrapper > article.has-post-thumbnail .nv-ft-wrap {
     grid-template-columns: var(--postcoltemplate, 35fr 65fr);
   }
   .posts-wrapper > article.has-post-thumbnail.layout-alternative:nth-child(even) {
     --thumbgridcolumn: 2;
   }
-  .posts-wrapper > article.has-post-thumbnail.layout-alternative:nth-child(even) .content {
+  .posts-wrapper > article.has-post-thumbnail.layout-alternative:nth-child(even) .nv-ft-wrap {
     grid-template-columns: var(--postcoltemplate, 65fr 35fr);
   }
   .nv-sidebar-wrap {
@@ -2254,11 +2253,7 @@ body.elementor-page .wrapper {
   left: 0;
 }
 
-.is-menu-sidebar.menu_sidebar_pull_left .header-menu-sidebar {
-  transform: translateX(0);
-}
-
-.is-menu-sidebar.menu_sidebar_pull_right .header-menu-sidebar {
+.is-menu-sidebar.menu_sidebar_pull_right .header-menu-sidebar, .is-menu-sidebar.menu_sidebar_pull_left .header-menu-sidebar {
   transform: translateX(0);
 }
 
@@ -2292,12 +2287,18 @@ body.elementor-page .wrapper {
   transition: all 0.3s linear;
   visibility: hidden;
   opacity: 0;
-  pointer-events: none;
 }
 
 .is-menu-sidebar .hfg-ov {
   visibility: visible;
   opacity: 1;
+}
+
+.hfg-pe {
+  pointer-events: none;
+}
+
+.is-menu-sidebar .hfg-pe {
   pointer-events: unset;
 }
 

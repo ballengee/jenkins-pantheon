@@ -164,6 +164,7 @@
   background-color: var(--nv-c-2) !important;
 }
 
+.editor-styles-wrapper main,
 body .editor-styles-wrapper,
 body .editor-styles-wrapper p {
   color: var(--nv-text-color);
@@ -200,6 +201,7 @@ body .editor-styles-wrapper p {
 .editor-styles-wrapper p {
   margin-top: 0;
   margin-bottom: 30px;
+  font-family: var(--bodyfontfamily);
 }
 
 .editor-styles-wrapper h1,

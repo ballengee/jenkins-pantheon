@@ -8,11 +8,13 @@
  * @package Neve
  */
 
-define( 'NEVE_VERSION', '3.4.1' );
+define( 'NEVE_VERSION', '3.5.1' );
 define( 'NEVE_INC_DIR', trailingslashit( get_template_directory() ) . 'inc/' );
 define( 'NEVE_ASSETS_URL', trailingslashit( get_template_directory_uri() ) . 'assets/' );
 define( 'NEVE_MAIN_DIR', get_template_directory() . '/' );
 define( 'NEVE_BASENAME', basename( NEVE_MAIN_DIR ) );
+define( 'NEVE_PLUGINS_DIR', plugin_dir_path( dirname( __DIR__ ) ) . 'plugins/' );
+
 if ( ! defined( 'NEVE_DEBUG' ) ) {
 	define( 'NEVE_DEBUG', false );
 }
@@ -111,11 +113,11 @@ add_filter(
 		$compatibilities['NevePro'] = [
 			'basefile'  => defined( 'NEVE_PRO_BASEFILE' ) ? NEVE_PRO_BASEFILE : '',
 			'required'  => '2.1',
-			'tested_up' => '2.4',
+			'tested_up' => '2.5',
 		];
 
 		return $compatibilities;
-	} 
+	}
 );
 require_once 'globals/migrations.php';
 require_once 'globals/utilities.php';

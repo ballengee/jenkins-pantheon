@@ -1,0 +1,32 @@
+<script id="nf-tmpl-salesforce-custom-field-map-row" type="text/template">
+    <div>
+        <span class="dashicons dashicons-menu handle"></span>
+    </div>
+    <div>
+        <label class="has-merge-tags">
+            <input type="text" class="setting" value="{{{ data.form_field }}}" data-id="form_field">
+            <span class="dashicons dashicons-list-view merge-tags"></span>
+        </label>
+        <span class="nf-option-error"></span>
+    </div>
+    <div>
+        <label>
+            <select data-id="field_map" list="field_map" class="setting">
+            {{{ data.renderOptions( 'field_map', data.field_map )}}}
+            </select>
+        </label>
+        <span class="nf-option-error"></span>
+    </div>
+    <div>
+        <label>
+            <select type="text" class="setting" value="{{{ data.special_instructions }}}" data-id="special_instructions" list="special_instructions">
+            {{{ data.renderOptions( 'special_instructions', data.special_instructions ) }}}
+            </select>
+        </label>
+        <span class="nf-option-error"></span>
+    </div>
+
+    <div>
+        <span class="dashicons dashicons-dismiss nf-delete"></span>
+    </div>
+</script>

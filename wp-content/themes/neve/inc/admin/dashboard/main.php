@@ -16,7 +16,6 @@ use Neve\Core\Theme_Info;
 class Main {
 
 	use Theme_Info;
-
 	/**
 	 * Changelog Handler.
 	 *
@@ -237,6 +236,7 @@ class Main {
 			'tpcPath'                 => defined( 'TIOB_PATH' ) ? TIOB_PATH . 'template-patterns-collection.php' : 'template-patterns-collection/template-patterns-collection.php',
 			'tpcAdminURL'             => admin_url( 'themes.php?page=tiob-starter-sites' ),
 			'pluginsURL'              => esc_url( admin_url( 'plugins.php' ) ),
+			'getPluginStateBaseURL'   => esc_url( rest_url( '/nv/v1/dashboard/plugin-state/' ) ),
 		];
 
 		if ( defined( 'NEVE_PRO_PATH' ) ) {
@@ -328,7 +328,6 @@ class Main {
 
 		return $notifications;
 	}
-
 
 	/**
 	 * Should branding notice be shown.

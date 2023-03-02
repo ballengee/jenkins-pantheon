@@ -94,8 +94,9 @@ class Nav_Walker extends \Walker_Nav_Menu {
 			'icon_type' => 'icon',
 			'icon'      => '<svg aria-label="' . esc_attr__( 'Dropdown', 'neve' ) . '" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M207.029 381.476L12.686 187.132c-9.373-9.373-9.373-24.569 0-33.941l22.667-22.667c9.357-9.357 24.522-9.375 33.901-.04L224 284.505l154.745-154.021c9.379-9.335 24.544-9.317 33.901.04l22.667 22.667c9.373 9.373 9.373 24.569 0 33.941L240.971 381.476c-9.373 9.372-24.569 9.372-33.942 0z"/></svg>',
 		];
-		$caret_settings         = apply_filters( 'neve_submenu_icon_settings', $default_caret_settings, $args->component_id );
 
+		$component_id    = $args->component_id ?? '';
+		$caret_settings  = apply_filters( 'neve_submenu_icon_settings', $default_caret_settings, $component_id );
 		$caret_pictogram = $this->get_caret_pictogram( $caret_settings );
 
 
@@ -110,7 +111,9 @@ class Nav_Walker extends \Walker_Nav_Menu {
 
 			$caret_wrap_css = $caret_settings['side'] === 'right' ? 'margin-left:5px;' : 'margin-right:5px;';
 
-			if ( $is_sidebar_item ) {
+			if ( $is_sidebar_item && neve_is_new_skin() ) {
+				$expand_dropdowns = apply_filters( 'neve_first_level_expanded', false );
+				$additional_class = $expand_dropdowns && $depth === 0 ? 'dropdown-open' : '';
 				add_action( 'neve_after_header_wrapper_hook', [ $this, 'inline_style_for_sidebar' ], 9 );
 
 				if ( $item->url === '#' && ! self::$dropdowns_inline_js_enqueued ) {
@@ -120,7 +123,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
 				$args->before = '<div class="wrap">';
 				$args->after  = '</div>';
 
-				$caret  = '<button ' . $expanded . ' type="button" class="caret-wrap navbar-toggle ' . $item->menu_order . '" style="' . esc_attr( $caret_wrap_css ) . '">';
+				$caret  = '<button ' . $expanded . ' type="button" class="caret-wrap navbar-toggle ' . esc_attr( $item->menu_order ) . ' ' . esc_attr( $additional_class ) . '" style="' . esc_attr( $caret_wrap_css ) . '">';
 				$caret .= $caret_pictogram;
 				$caret .= '</button>';
 
@@ -130,7 +133,7 @@ class Nav_Walker extends \Walker_Nav_Menu {
 					$args->after = $caret . $args->after;
 				}
 			} else {
-				$caret  = '<div role="none"' . $expanded . ' class="caret-wrap ' . $item->menu_order . '" style="' . esc_attr( $caret_wrap_css ) . '">';
+				$caret  = '<div role="none" ' . $expanded . ' class="caret-wrap ' . $item->menu_order . '" style="' . esc_attr( $caret_wrap_css ) . '">';
 				$caret .= $caret_pictogram;
 				$caret .= '</div>';
 
