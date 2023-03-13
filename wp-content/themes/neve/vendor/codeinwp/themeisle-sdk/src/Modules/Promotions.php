@@ -265,19 +265,23 @@ class Promotions extends Abstract_Module {
 
 		$all = [
 			'optimole' => [
-				'om-editor'     => [
+				'om-editor'      => [
 					'env'    => ! $has_optimole && $is_min_req_v && ! $had_optimole_from_promo,
 					'screen' => 'editor',
 				],
-				'om-attachment' => [
-					'env'    => ! $has_optimole && ! $had_optimole_from_promo,
-					'screen' => 'media',
+				'om-image-block' => [
+					'env'    => ! $has_optimole && $is_min_req_v && ! $had_optimole_from_promo,
+					'screen' => 'editor',
 				],
-				'om-media'      => [
+				'om-attachment'  => [
+					'env'    => ! $has_optimole && ! $had_optimole_from_promo,
+					'screen' => 'media-editor',
+				],
+				'om-media'       => [
 					'env'    => ! $has_optimole && ! $had_optimole_from_promo && $has_enough_attachments,
 					'screen' => 'media',
 				],
-				'om-elementor'  => [
+				'om-elementor'   => [
 					'env'    => ! $has_optimole && ! $had_optimole_from_promo && defined( 'ELEMENTOR_VERSION' ),
 					'screen' => 'elementor',
 				],
@@ -373,6 +377,11 @@ class Promotions extends Abstract_Module {
 		foreach ( $this->promotions as $slug => $promos ) {
 			foreach ( $promos as $key => $data ) {
 				switch ( $data['screen'] ) {
+					case 'media-editor':
+						if ( ! $is_media && ! $is_editor ) {
+							unset( $this->promotions[ $slug ][ $key ] );
+						}
+						break;
 					case 'media':
 						if ( ! $is_media ) {
 							unset( $this->promotions[ $slug ][ $key ] );
@@ -417,6 +426,7 @@ class Promotions extends Abstract_Module {
 
 		switch ( $slug ) {
 			case 'om-editor':
+			case 'om-image-block':
 			case 'blocks-css':
 			case 'blocks-animation':
 			case 'blocks-conditions':
@@ -552,7 +562,22 @@ class Promotions extends Abstract_Module {
 		if ( $this->debug ) {
 			return true;
 		}
+		$attachment_count = get_transient( 'tsk_attachment_count' );
+		if ( false === $attachment_count ) {
+			$args = array(
+				'post_type'      => 'attachment',
+				'posts_per_page' => 51,
+				'fields'         => 'ids',
+				'post_status'    => 'inherit',
+				'no_found_rows'  => true,
+			);
 
-		return array_sum( (array) wp_count_attachments( 'image' ) ) > 50;
+			$query            = new \WP_Query( $args );
+			$attachment_count = $query->post_count;
+
+
+			set_transient( 'tsk_attachment_count', $attachment_count, DAY_IN_SECONDS );
+		}
+		return $attachment_count > 50;
 	}
 }

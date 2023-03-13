@@ -19,6 +19,49 @@ Neve is distributed under the terms of the GNU GPLv2 or later
 
 == Changelog ==
 
+##### [Version 3.5.5](https://github.com/Codeinwp/neve/compare/v3.5.4...v3.5.5) (2023-03-13)
+
+- Removed legacy skin
+
+
+
+
+##### [Version 3.5.4](https://github.com/Codeinwp/neve/compare/v3.5.3...v3.5.4) (2023-03-01)
+
+- [Feat] Allow custom colors to be selected inside the customizer
+- [Fix] Proper indentation for comments
+- [Fix] Inconsistent space between avatar and text in comments
+- [Fix] Add margin-bottom for images with no caption
+- Update Google Fonts
+
+
+
+
+##### [Version 3.5.3](https://github.com/Codeinwp/neve/compare/v3.5.2...v3.5.3) (2023-02-16)
+
+- [Fix] Alternative Layout control not visible inside the customizer
+- [Fix] Menu item not aligned with caret
+- Better inform about the features for WooCommerce available in Neve PRO
+
+
+
+
+##### [Version 3.5.2](https://github.com/Codeinwp/neve/compare/v3.5.1...v3.5.2) (2023-02-15)
+
+- [Feat] Add a filter for the author post meta
+- [Feat] Improve Accessibility. Use the tab switch to submenu items only if the arrow is clicked on focus 
+- [Fix] Layout issue with Elementor Pro checkout widget
+- [Fix] PHP 8.2 Support
+- [Fix] Vertical alignment for cover posts
+- [Fix] Missing padding inside the customizer for the button appearance control
+- [Fix] Infinite scroll for translated blogs
+- Update Google Fonts
+- Improve the development process
+- Improve performance by moving the menu sidebar opening behavior to inline styles
+
+
+
+
 ##### [Version 3.5.1](https://github.com/Codeinwp/neve/compare/v3.5.0...v3.5.1) (2023-01-30)
 
 - Update the tested up to version for Neve Pro
