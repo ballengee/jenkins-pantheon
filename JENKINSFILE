@@ -1,7 +1,7 @@
 node {
 
 	stage('Checking out: ' + env.BRANCH_NAME) {
-		git branch: env.BRANCH_NAME, credentialsId: 'xxxxxxxxxxxxxxxx', url: 'https://github.com/ballengee/jenkins-pantheon.git'
+		git branch: env.BRANCH_NAME, credentialsId: '290e977e-50bf-41d4-a404-b49087ec343c', url: 'https://github.com/ballengee/jenkins-pantheon.git'
 	}
 
 	if (env.BRANCH_NAME == 'master') {
