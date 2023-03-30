@@ -1,0 +1,17 @@
+node {
+
+	stage('Checking out: ' + env.BRANCH_NAME) {
+		git branch: env.BRANCH_NAME, credentialsId: 'xxxxxxxxxxxxxxxx', url: 'https://github.com/ballengee/jenkins-pantheon.git'
+	}
+
+	if (env.BRANCH_NAME == 'master') {
+		stage('Deploying to Production Environment'){
+		}
+ 	}
+
+	} else if (env.BRANCH_NAME == 'dev') {
+		stage('Deploying to Dev Environment'){
+		}
+
+	}
+}
